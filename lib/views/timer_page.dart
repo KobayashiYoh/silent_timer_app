@@ -13,9 +13,17 @@ class TimerPage extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 64.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
+              const SizedBox(height: 32.0),
+              Container(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.settings_outlined),
+                ),
+              ),
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -51,6 +59,13 @@ class TimerPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 64.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add),
+                ),
+              ),
               Expanded(
                 child: ListView(
                   children: const [
