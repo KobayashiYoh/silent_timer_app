@@ -23,6 +23,13 @@ class TimerNotifier extends StateNotifier<TimerState> {
     return '$hoursText:$minutesText:$secondsText';
   }
 
+  void onPressedPlayButton() {
+    state.isActive ? _stopTimer() : _startTimer();
+    state = state.copyWith(
+      isActive: !state.isActive,
+    );
+  }
+
   void updateTime() {
     final int newTotalSeconds = _currentTotalSeconds - 1;
     _hours = newTotalSeconds.convertToHoursFromSeconds();
@@ -39,13 +46,6 @@ class TimerNotifier extends StateNotifier<TimerState> {
     }
   }
 
-  void onPressedPlayButton() {
-    state.isActive ? _stopTimer() : _startTimer();
-    state = state.copyWith(
-      isActive: !state.isActive,
-    );
-  }
-
   void _startTimer() {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
@@ -55,5 +55,11 @@ class TimerNotifier extends StateNotifier<TimerState> {
 
   void _stopTimer() {
     _timer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
