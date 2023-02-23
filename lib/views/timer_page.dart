@@ -15,7 +15,10 @@ class TimerPage extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(state.timeText),
+              Text(
+                state.timeText,
+                style: const TextStyle(fontSize: 32.0),
+              ),
               TextButton(
                 onPressed: notifier.onPressedPlayButton,
                 child: Text(state.isActive ? 'stop' : 'start'),
