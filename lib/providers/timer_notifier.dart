@@ -26,6 +26,29 @@ class TimerNotifier extends StateNotifier<TimerState> {
     return '$hoursText:$minutesText:$secondsText';
   }
 
+  void onChangedTextField(String inputText) {
+    if (int.tryParse(inputText) == null || inputText.length > 6) {
+      state = state.copyWith(
+        timeText: _timeText,
+      );
+      return;
+    }
+  }
+
+  void onSubmitted(String inputText) {
+    if (int.tryParse(inputText) == null || inputText.length > 6) {
+      return;
+    }
+    final String sixDigitString =
+        inputText.length < 6 ? inputText.padLeft(6, '0') : inputText;
+    _hours = int.parse(sixDigitString.substring(0, 2));
+    _minutes = int.parse(sixDigitString.substring(2, 4));
+    _seconds = int.parse(sixDigitString.substring(4, 6));
+    state = state.copyWith(
+      timeText: _timeText,
+    );
+  }
+
   void onPressedPlayButton() {
     state.isActive ? _stopTimer() : _startTimer();
     state = state.copyWith(
@@ -60,7 +83,6 @@ class TimerNotifier extends StateNotifier<TimerState> {
   }
 
   void updateTime() {
-    print(_currentTotalSeconds);
     final int newTotalSeconds = _currentTotalSeconds - 1;
     _hours = newTotalSeconds.convertToHoursFromSeconds();
     _minutes = newTotalSeconds.convertToMinutesFromSeconds();

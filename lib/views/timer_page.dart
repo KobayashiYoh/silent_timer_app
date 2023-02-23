@@ -19,6 +19,15 @@ class TimerPage extends ConsumerWidget {
                 state.timeText,
                 style: const TextStyle(fontSize: 32.0),
               ),
+              SizedBox(
+                width: 160.0,
+                child: TextField(
+                  onChanged: notifier.onChangedTextField,
+                  onSubmitted: notifier.onSubmitted,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(),
+                ),
+              ),
               TextButton(
                 onPressed: notifier.onPressedPlayButton,
                 child: Text(state.isActive ? 'stop' : 'start'),
