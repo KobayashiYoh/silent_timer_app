@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:silent_timer_app/extensions/int_extension.dart';
 import 'package:silent_timer_app/models/timer_state.dart';
+import 'package:vibration/vibration.dart';
 
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
   return TimerNotifier();
@@ -30,7 +31,19 @@ class TimerNotifier extends StateNotifier<TimerState> {
     );
   }
 
+  void _finishTimer() {
+    Vibration.vibrate(
+      pattern: [0, 1000, 500, 1000, 500, 1000],
+      intensities: [0, 255, 0, 255, 0, 255],
+    );
+    _stopTimer();
+    state = state.copyWith(
+      timeText: '終了',
+    );
+  }
+
   void updateTime() {
+    print(_currentTotalSeconds);
     final int newTotalSeconds = _currentTotalSeconds - 1;
     _hours = newTotalSeconds.convertToHoursFromSeconds();
     _minutes = newTotalSeconds.convertToMinutesFromSeconds();
@@ -39,10 +52,7 @@ class TimerNotifier extends StateNotifier<TimerState> {
       timeText: _timeText,
     );
     if (_currentTotalSeconds <= 0) {
-      _stopTimer();
-      state = state.copyWith(
-        timeText: '終了',
-      );
+      _finishTimer();
     }
   }
 
