@@ -9,13 +9,13 @@ final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
 });
 
 class TimerNotifier extends StateNotifier<TimerState> {
-  TimerNotifier() : super(kInitialTimerState) {}
-  int _hours = 10;
-  int _minutes = 10;
+  TimerNotifier() : super(kInitialTimerState);
+  int _hours = 0;
+  int _minutes = 0;
   int _seconds = 10;
   Timer? _timer;
 
-  int get _currentTotalTime => _hours * 3600 + _minutes * 60 + _seconds;
+  int get _currentTotalSeconds => _hours * 3600 + _minutes * 60 + _seconds;
   String get _timeText {
     String hoursText = _hours > 9 ? '$_hours' : '0$_hours';
     String minutesText = _minutes > 9 ? '$_minutes' : '0$_minutes';
@@ -24,13 +24,19 @@ class TimerNotifier extends StateNotifier<TimerState> {
   }
 
   void updateTime() {
-    int newTotalSeconds = _currentTotalTime - 1;
+    final int newTotalSeconds = _currentTotalSeconds - 1;
     _hours = newTotalSeconds.convertToHoursFromSeconds();
     _minutes = newTotalSeconds.convertToMinutesFromSeconds();
     _seconds = newTotalSeconds.convertToSecondsFromSeconds();
     state = state.copyWith(
       timeText: _timeText,
     );
+    if (_currentTotalSeconds <= 0) {
+      _stopTimer();
+      state = state.copyWith(
+        timeText: '終了',
+      );
+    }
   }
 
   void onPressedPlayButton() {
@@ -49,6 +55,5 @@ class TimerNotifier extends StateNotifier<TimerState> {
 
   void _stopTimer() {
     _timer?.cancel();
-    print('stop');
   }
 }
