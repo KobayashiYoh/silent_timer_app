@@ -16,7 +16,12 @@ class TimerNotifier extends StateNotifier<TimerState> {
   Timer? _timer;
 
   int get _currentTotalTime => _hours * 3600 + _minutes * 60 + _seconds;
-  String get _timeText => '$_hours:$_minutes:$_seconds';
+  String get _timeText {
+    String hoursText = _hours > 9 ? '$_hours' : '0$_hours';
+    String minutesText = _minutes > 9 ? '$_minutes' : '0$_minutes';
+    String secondsText = _seconds > 9 ? '$_seconds' : '0$_seconds';
+    return '$hoursText:$minutesText:$secondsText';
+  }
 
   void updateTime() {
     int newTotalSeconds = _currentTotalTime - 1;
