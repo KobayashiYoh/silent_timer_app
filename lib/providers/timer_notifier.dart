@@ -12,7 +12,10 @@ final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
 });
 
 class TimerNotifier extends StateNotifier<TimerState> {
-  TimerNotifier() : super(kInitialTimerState);
+  TimerNotifier() : super(kInitialTimerState) {
+    _initialTotalSeconds = _currentTotalSeconds;
+  }
+  late int _initialTotalSeconds;
   int _hours = 0;
   int _minutes = 0;
   int _seconds = 10;
@@ -47,6 +50,7 @@ class TimerNotifier extends StateNotifier<TimerState> {
     state = state.copyWith(
       timeText: _timeText,
     );
+    _initialTotalSeconds = _currentTotalSeconds;
   }
 
   void onPressedPlayButton() {
@@ -89,6 +93,7 @@ class TimerNotifier extends StateNotifier<TimerState> {
     _seconds = newTotalSeconds.convertToSecondsFromSeconds();
     state = state.copyWith(
       timeText: _timeText,
+      progressValue: _currentTotalSeconds / _initialTotalSeconds,
     );
     if (_currentTotalSeconds <= 0) {
       _finishTimer();
