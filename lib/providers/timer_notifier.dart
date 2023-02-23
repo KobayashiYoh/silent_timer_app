@@ -12,7 +12,10 @@ final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
 });
 
 class TimerNotifier extends StateNotifier<TimerState> {
-  TimerNotifier() : super(kInitialTimerState);
+  TimerNotifier() : super(kInitialTimerState) {
+    _initialTotalSeconds = _currentTotalSeconds;
+  }
+  late int _initialTotalSeconds;
   int _hours = 0;
   int _minutes = 0;
   int _seconds = 10;
@@ -24,6 +27,30 @@ class TimerNotifier extends StateNotifier<TimerState> {
     String minutesText = _minutes > 9 ? '$_minutes' : '0$_minutes';
     String secondsText = _seconds > 9 ? '$_seconds' : '0$_seconds';
     return '$hoursText:$minutesText:$secondsText';
+  }
+
+  void onChangedTextField(String inputText) {
+    if (int.tryParse(inputText) == null || inputText.length > 6) {
+      state = state.copyWith(
+        timeText: _timeText,
+      );
+      return;
+    }
+  }
+
+  void onSubmitted(String inputText) {
+    if (int.tryParse(inputText) == null || inputText.length > 6) {
+      return;
+    }
+    final String sixDigitString =
+        inputText.length < 6 ? inputText.padLeft(6, '0') : inputText;
+    _hours = int.parse(sixDigitString.substring(0, 2));
+    _minutes = int.parse(sixDigitString.substring(2, 4));
+    _seconds = int.parse(sixDigitString.substring(4, 6));
+    state = state.copyWith(
+      timeText: _timeText,
+    );
+    _initialTotalSeconds = _currentTotalSeconds;
   }
 
   void onPressedPlayButton() {
@@ -60,13 +87,13 @@ class TimerNotifier extends StateNotifier<TimerState> {
   }
 
   void updateTime() {
-    print(_currentTotalSeconds);
     final int newTotalSeconds = _currentTotalSeconds - 1;
     _hours = newTotalSeconds.convertToHoursFromSeconds();
     _minutes = newTotalSeconds.convertToMinutesFromSeconds();
     _seconds = newTotalSeconds.convertToSecondsFromSeconds();
     state = state.copyWith(
       timeText: _timeText,
+      progressValue: _currentTotalSeconds / _initialTotalSeconds,
     );
     if (_currentTotalSeconds <= 0) {
       _finishTimer();
