@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:silent_timer_app/extensions/int_extension.dart';
+import 'package:silent_timer_app/main.dart';
 import 'package:silent_timer_app/models/timer_state.dart';
 import 'package:vibration/vibration.dart';
 
@@ -31,7 +33,22 @@ class TimerNotifier extends StateNotifier<TimerState> {
     );
   }
 
+  void setNotification() async {
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails(
+      // sound: 'example.mp3',
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: false,
+    );
+    NotificationDetails platformChannelSpecifics =
+        const NotificationDetails(iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'むおーん', '時間になりました', platformChannelSpecifics);
+  }
+
   void _finishTimer() {
+    setNotification();
     Vibration.vibrate(
       pattern: [0, 1000, 500, 1000, 500, 1000],
       intensities: [0, 255, 0, 255, 0, 255],

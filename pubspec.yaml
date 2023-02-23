@@ -39,6 +39,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   hooks_riverpod: ^2.2.0
   vibration: ^1.7.6
+  flutter_local_notifications: ^13.0.0
 
 dev_dependencies:
   flutter_test:
