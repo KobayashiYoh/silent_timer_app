@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:silent_timer_app/extensions/int_extension.dart';
 import 'package:silent_timer_app/models/timer_state.dart';
 
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
@@ -14,14 +15,17 @@ class TimerNotifier extends StateNotifier<TimerState> {
   int _seconds = 10;
   Timer? _timer;
 
-  void subtractTime() {
-    int currentTotalSeconds = _hours * 3600 + _minutes * 60 + _seconds;
-    int newTotalSeconds = currentTotalSeconds - 1;
-    print('new total seconds: $newTotalSeconds');
-    _hours = (newTotalSeconds / 3600).floor();
-    _minutes = ((newTotalSeconds % 3600) / 60).floor();
-    _seconds = newTotalSeconds % 60;
-    print('$_hours:$_minutes:$_seconds');
+  int get _currentTotalTime => _hours * 3600 + _minutes * 60 + _seconds;
+  String get _timeText => '$_hours:$_minutes:$_seconds';
+
+  void updateTime() {
+    int newTotalSeconds = _currentTotalTime - 1;
+    _hours = newTotalSeconds.convertToHoursFromSeconds();
+    _minutes = newTotalSeconds.convertToMinutesFromSeconds();
+    _seconds = newTotalSeconds.convertToSecondsFromSeconds();
+    state = state.copyWith(
+      timeText: _timeText,
+    );
   }
 
   void onPressedPlayButton() {
@@ -34,7 +38,7 @@ class TimerNotifier extends StateNotifier<TimerState> {
   void _startTimer() {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
-      (timer) => subtractTime(),
+      (timer) => updateTime(),
     );
   }
 
